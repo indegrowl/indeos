@@ -1,0 +1,22 @@
+modules:
+  - type: dnf
+    install:
+      packages:
+        # Rust
+        - rustup
+        - gcc
+        - clang
+        - mold
+        # Go
+        - golang
+        # Python
+        - python3-devel
+        - uv
+        # Node
+        - nodejs
+        - nodejs-npm
+        # Lua
+        - lua
+        - luajit
+        - luarocks
+        - lua-devel
