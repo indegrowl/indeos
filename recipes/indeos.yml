@@ -1,0 +1,9 @@
+---
+name: indeos
+description: This is my personal OS image.
+
+base-image: quay.io/fedora/fedora-sway:latest
+image-version: latest
+
+modules:
+  - type: signing # this sets up the proper policy & signing files for signed images to work fully
