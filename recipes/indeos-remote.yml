@@ -2,7 +2,7 @@
 name: indeos
 description: This is my personal OS image.
 
-base-image: ghcr.io/ublue-os/sway-atomic-main:latest
+base-image: ghcr.io/ublue-os/sway-atomic-main
 image-version: latest
 
 modules:
