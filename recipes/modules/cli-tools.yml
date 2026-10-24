@@ -12,7 +12,6 @@ modules:
     install:
       packages:
         - kitty # Hyprland's default config binds Super+Q to kitty
-        - chezmoi
         - neovim
         - tmux
         - zellij
@@ -31,3 +30,11 @@ modules:
         - yazi
         - wl-clipboard
         - cliphist
+
+  # Clones and applies github.com/indegrowl/dotfiles into ~/.local/share/chezmoi
+  # on first login (or at boot, with lingering). Updates are manual.
+  - type: chezmoi
+    repository: https://github.com/indegrowl/dotfiles.git
+    all-users: true
+    disable-update: true
+    file-conflict-policy: skip

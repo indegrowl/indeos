@@ -76,7 +76,7 @@ check_remote() {
 check_gaming_and_tools() {
   assert_pkg steam gamescope terra-gamescope Sunshine mesa-vulkan-drivers mesa-dri-drivers
   assert_pkg podman distrobox podman-compose
-  assert_pkg kitty chezmoi neovim tmux zellij git lazygit starship gh btop glow pass gnupg2 \
+  assert_pkg kitty neovim tmux zellij git lazygit starship gh btop glow pass gnupg2 \
              zoxide fzf ripgrep tree yazi wl-clipboard cliphist
 }
 
@@ -110,10 +110,24 @@ check_apps() {
   fi
 }
 
+check_dotfiles() {
+  local u=/usr/lib/systemd/user/chezmoi-init.service
+  assert_file $u
+  check "chezmoi-init clones indegrowl/dotfiles" "grep -rqF 'https://github.com/indegrowl/dotfiles.git' $u /usr/lib/systemd/user/chezmoi-init.service.d 2>/dev/null"
+  assert_enabled chezmoi-init.service user
+  # Lingering starts it at boot, maybe before the network: it must retry
+  check "chezmoi-init retries on failure" \
+    "systemctl --global cat chezmoi-init.service 2>/dev/null | grep -qx 'Restart=on-failure' || grep -rqx 'Restart=on-failure' /usr/lib/systemd/user/chezmoi-init.service.d/"
+  check "no automatic chezmoi update" "! systemctl --global is-enabled chezmoi-update.timer 2>/dev/null | grep -qx enabled"
+  check "chezmoi runs (provided by the chezmoi module)" "chezmoi --version"
+  check "exactly one chezmoi binary on PATH" "[ \"\$(which -a chezmoi | xargs -n1 readlink -f | sort -u | wc -l)\" = 1 ]"
+}
+
 check_base
 check_desktop
 check_remote
 check_gaming_and_tools
 check_ai_agents
 check_apps
+check_dotfiles
 finish
