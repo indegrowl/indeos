@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
+# Gaming and streaming. Steam, gamescope and Mesa come with Bazzite and are
+# declared so a base change can't drop them; Sunshine comes from LizardByte.
+modules:
+  - type: dnf
+    repos:
+      copr:
+        - lizardbyte/stable
+    install:
+      packages:
+        - steam
+        - terra-gamescope # Bazzite's patched gamescope; the Fedora "gamescope" conflicts
+        - mesa-vulkan-drivers
+        - mesa-dri-drivers
+        - Sunshine

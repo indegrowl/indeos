@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
+# Container tooling for the arr stack and dev boxes.
+modules:
+  - type: dnf
+    install:
+      packages:
+        - podman
+        - distrobox
+        - podman-compose

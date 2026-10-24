@@ -29,7 +29,6 @@ modules:
         - waybar
         - fuzzel
         - mako
-        - kitty
         - greetd
         - tuigreet
         # Kept from Bazzite's KDE base, declared so Plasma removal can't take them

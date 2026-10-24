@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
+# Terminal, shell and everyday CLI tools.
+modules:
+  - type: dnf
+    repos:
+      copr:
+        - atim/lazygit
+        - atim/starship
+        - lihaohong/yazi
+        - varlad/zellij
+        - sdegler/hyprland # cliphist
+    install:
+      packages:
+        - kitty # Hyprland's default config binds Super+Q to kitty
+        - chezmoi
+        - neovim
+        - tmux
+        - zellij
+        - git
+        - lazygit
+        - starship
+        - gh
+        - btop
+        - glow
+        - pass
+        - gnupg2
+        - zoxide
+        - fzf
+        - ripgrep
+        - tree
+        - yazi
+        - wl-clipboard
+        - cliphist

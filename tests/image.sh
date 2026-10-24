@@ -73,7 +73,15 @@ check_remote() {
   check "auto-rebooting bootc timer not enabled" "! systemctl is-enabled bootc-fetch-apply-updates.timer 2>/dev/null | grep -qx enabled"
 }
 
+check_gaming_and_tools() {
+  assert_pkg steam gamescope terra-gamescope Sunshine mesa-vulkan-drivers mesa-dri-drivers
+  assert_pkg podman distrobox podman-compose
+  assert_pkg kitty chezmoi neovim tmux zellij git lazygit starship gh btop glow pass gnupg2 \
+             zoxide fzf ripgrep tree yazi wl-clipboard cliphist
+}
+
 check_base
 check_desktop
 check_remote
+check_gaming_and_tools
 finish
