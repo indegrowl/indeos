@@ -3,7 +3,9 @@
 # against the release's sha256sums; zulip-terminal as a uv tool.
 set -euo pipefail
 
-tag="$(curl -fsSL https://api.github.com/repos/d99kris/nchat/releases/latest | sed -nE 's/.*"tag_name": *"([^"]+)".*/\1/p')"
+# Resolve the latest tag from the releases/latest redirect (no API rate limit).
+tag="$(curl -fsSLI -o /dev/null -w '%{url_effective}' https://github.com/d99kris/nchat/releases/latest)"
+tag="${tag##*/}"
 name="nchat-${tag#v}-linux-x86_64-glibc"
 tmp="$(mktemp -d)"
 base="https://github.com/d99kris/nchat/releases/download/${tag}"

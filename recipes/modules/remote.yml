@@ -24,6 +24,10 @@ modules:
         - firewalld.service
         - bastion-hostname.service
         - var-mnt-data.mount
+        - bastion-firewall-zone.service
+      disabled:
+        # Would race var-mnt-data.mount for the labelled data drive; bastion declares its drives
+        - ublue-os-media-automount.service
       masked:
         - sleep.target
         - suspend.target

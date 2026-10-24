@@ -35,6 +35,11 @@ check_desktop() {
   check "display-manager.service points at greetd" \
     "[ \"\$(basename \"\$(readlink -f /etc/systemd/system/display-manager.service)\")\" = greetd.service ]"
   assert_grep '^f /var/lib/systemd/linger/indegrowl' /usr/lib/tmpfiles.d/bastion-linger.conf
+  # greetd's home and tuigreet's --remember cache live in /var, which images don't populate
+  assert_grep '^d /var/lib/greetd 0750 greetd greetd' /usr/lib/tmpfiles.d/bastion-greetd.conf
+  assert_grep '^d /var/cache/tuigreet 0755 greetd greetd' /usr/lib/tmpfiles.d/bastion-greetd.conf
+  # GUI privilege prompts work before any dotfiles exist
+  assert_enabled hyprpolkitagent.service user
   # Dolphin's "Open with" needs an applications.menu once Plasma's menu file is gone
   assert_file /etc/xdg/menus/applications.menu
 }
@@ -54,6 +59,11 @@ check_remote() {
   check "sshd: no root login from Tailscale"      "$sshT,addr=100.101.1.2 | grep -qx 'permitrootlogin no'"
   check "sshd: no root login from LAN"            "$sshT,addr=192.168.1.50 | grep -qx 'permitrootlogin no'"
   # Firewall: LAN zone has streaming + mDNS only, Tailscale fully trusted
+  assert_enabled bastion-firewall-zone.service
+  check "boot unit resets a drifted default zone to bastion-lan before firewalld" \
+    "firewall-offline-cmd --set-default-zone=FedoraWorkstation >/dev/null &&
+     /usr/libexec/bastion-firewall-zone && [ \"\$(firewall-offline-cmd --get-default-zone)\" = bastion-lan ] &&
+     grep -qx 'Before=firewalld.service' /usr/lib/systemd/system/bastion-firewall-zone.service"
   check "firewall default zone is bastion-lan" "[ \"\$(firewall-offline-cmd --get-default-zone)\" = bastion-lan ]"
   check "tailscale0 in trusted zone" "firewall-offline-cmd --zone=trusted --list-interfaces | grep -qw tailscale0"
   check "LAN zone services are exactly mdns" "[ \"\$(firewall-offline-cmd --zone=bastion-lan --list-services)\" = mdns ]"
@@ -118,6 +128,8 @@ check_dotfiles() {
   # Lingering starts it at boot, maybe before the network: it must retry
   check "chezmoi-init retries on failure" \
     "systemctl --global cat chezmoi-init.service 2>/dev/null | grep -qx 'Restart=on-failure' || grep -rqx 'Restart=on-failure' /usr/lib/systemd/user/chezmoi-init.service.d/"
+  check "chezmoi-init skips system users (greetd's greeter session)" \
+    "grep -rqx 'ConditionUser=!@system' /usr/lib/systemd/user/chezmoi-init.service.d/"
   check "no automatic chezmoi update" "! systemctl --global is-enabled chezmoi-update.timer 2>/dev/null | grep -qx enabled"
   check "chezmoi runs (provided by the chezmoi module)" "chezmoi --version"
   check "exactly one chezmoi binary on PATH" "[ \"\$(which -a chezmoi | xargs -n1 readlink -f | sort -u | wc -l)\" = 1 ]"
@@ -129,7 +141,11 @@ check_storage() {
   assert_grep '^Where=/var/mnt/data$' $m
   assert_grep '^Type=btrfs$' $m
   # Missing drive must never block boot (Review Focus 2)
-  assert_grep '^Options=noatime,compress=zstd:1,nofail,x-systemd.device-timeout=10s$' $m
+  assert_grep '^Options=noatime,compress=zstd:1,nofail$' $m
+  # A missing drive gives up after 10s (x-systemd.device-timeout only works in fstab)
+  assert_grep '^JobRunningTimeoutSec=10s$' '/usr/lib/systemd/system/dev-disk-by\x2duuid-5ade185d\x2db4a7\x2d4dfb\x2d80d8\x2d691830837386.device.d/10-bastion-timeout.conf'
+  # Bazzite's automounter would race us for the labelled drive
+  check "ublue-os-media-automount disabled" "! systemctl is-enabled ublue-os-media-automount.service 2>/dev/null | grep -qx enabled"
   assert_enabled var-mnt-data.mount
   check "/mnt resolves to /var/mnt" "[ \"\$(readlink -f /mnt)\" = /var/mnt ]"
 }

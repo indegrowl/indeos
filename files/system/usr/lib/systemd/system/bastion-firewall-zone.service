@@ -1,0 +1,10 @@
+[Unit]
+Description=Keep bastion-lan as the default firewall zone
+Before=firewalld.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/bastion-firewall-zone
+
+[Install]
+WantedBy=multi-user.target

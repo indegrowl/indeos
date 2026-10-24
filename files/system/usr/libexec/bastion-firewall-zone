@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Make bastion-lan the default firewall zone. The image sets it at build time,
+# but ostree's /etc merge keeps a locally changed firewalld.conf on rebase,
+# which would leave FedoraWorkstation (ssh + 1025-65535 open) in charge.
+set -euo pipefail
+if [[ "$(firewall-offline-cmd --get-default-zone)" != bastion-lan ]]; then
+  firewall-offline-cmd --set-default-zone=bastion-lan
+fi
