@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
+# Language toolchains. Go, Python, Node and Lua versions come from mise per user;
+# the image only carries rustup, mise and the build basics they need.
+modules:
+  - type: dnf
+    repos:
+      copr:
+        - jdxcode/mise
+    install:
+      packages:
+        - rustup
+        - mise
+        - gcc
+        - clang
+        - mold
+        - python3-devel
+        - lua-devel

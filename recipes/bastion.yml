@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+---
+name: bastion
+description: Bazzite + Hyprland image for bastion, an always-on gaming, dev and media desktop.
+
+base-image: ghcr.io/ublue-os/bazzite
+image-version: stable
+
+modules:
+  - from-file: modules/dev-languages.yml
+  - type: signing # this sets up the proper policy & signing files for signed images to work fully
