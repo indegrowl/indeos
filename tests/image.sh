@@ -123,6 +123,17 @@ check_dotfiles() {
   check "exactly one chezmoi binary on PATH" "[ \"\$(which -a chezmoi | xargs -n1 readlink -f | sort -u | wc -l)\" = 1 ]"
 }
 
+check_storage() {
+  local m=/usr/lib/systemd/system/var-mnt-data.mount
+  assert_grep '^What=/dev/disk/by-uuid/5ade185d-b4a7-4dfb-80d8-691830837386$' $m
+  assert_grep '^Where=/var/mnt/data$' $m
+  assert_grep '^Type=btrfs$' $m
+  # Missing drive must never block boot (Review Focus 2)
+  assert_grep '^Options=noatime,compress=zstd:1,nofail,x-systemd.device-timeout=10s$' $m
+  assert_enabled var-mnt-data.mount
+  check "/mnt resolves to /var/mnt" "[ \"\$(readlink -f /mnt)\" = /var/mnt ]"
+}
+
 check_base
 check_desktop
 check_remote
@@ -130,4 +141,5 @@ check_gaming_and_tools
 check_ai_agents
 check_apps
 check_dotfiles
+check_storage
 finish

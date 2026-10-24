@@ -1,0 +1,14 @@
+# bastion's 2TB data drive (backups now, arr media later), reachable as
+# /mnt/data (/mnt links to /var/mnt). nofail + a short device timeout keep a
+# missing drive from blocking boot.
+[Unit]
+Description=bastion data drive
+
+[Mount]
+What=/dev/disk/by-uuid/5ade185d-b4a7-4dfb-80d8-691830837386
+Where=/var/mnt/data
+Type=btrfs
+Options=noatime,compress=zstd:1,nofail,x-systemd.device-timeout=10s
+
+[Install]
+WantedBy=multi-user.target

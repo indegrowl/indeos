@@ -23,6 +23,7 @@ modules:
         - avahi-daemon.service
         - firewalld.service
         - bastion-hostname.service
+        - var-mnt-data.mount
       masked:
         - sleep.target
         - suspend.target
