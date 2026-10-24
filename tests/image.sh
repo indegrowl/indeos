@@ -80,8 +80,19 @@ check_gaming_and_tools() {
              zoxide fzf ripgrep tree yazi wl-clipboard cliphist
 }
 
+check_ai_agents() {
+  assert_pkg nodejs uv python3.13
+  check "hermes (Nous Research hermes-agent) runs" "hermes --help"
+  check "hermes-agent is the Nous Research package" \
+    "grep -q '^Author: Nous Research' /usr/lib/uv-tools/hermes-agent/lib/python3.13/site-packages/hermes_agent-*.dist-info/METADATA"
+  check "pi (@earendil-works/pi-coding-agent) runs" "pi --help"
+  check "Claude Code is not in the image" "! command -v claude && [ -z \"\$(find /usr -path '*bin*' -name 'claude*' 2>/dev/null)\" ]"
+  check "no npm/uv caches left in image" "[ ! -d /root/.npm ] && [ ! -d /root/.cache/uv ]"
+}
+
 check_base
 check_desktop
 check_remote
 check_gaming_and_tools
+check_ai_agents
 finish

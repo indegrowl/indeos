@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
+# Hermes Agent and pi, installed system-wide. nodejs is pi's runtime; uv and
+# python3.13 install and run hermes-agent.
+modules:
+  - type: dnf
+    install:
+      packages:
+        - nodejs
+        - nodejs-npm
+        - uv
+        - python3.13
+
+  - type: script
+    scripts:
+      - install-ai-agents.sh

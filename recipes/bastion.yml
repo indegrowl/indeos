@@ -22,4 +22,5 @@ modules:
   - from-file: modules/gaming.yml
   - from-file: modules/containers.yml
   - from-file: modules/cli-tools.yml
+  - from-file: modules/ai-agents.yml
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
