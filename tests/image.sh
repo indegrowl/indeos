@@ -90,9 +90,30 @@ check_ai_agents() {
   check "no npm/uv caches left in image" "[ ! -d /root/.npm ] && [ ! -d /root/.cache/uv ]"
 }
 
+check_apps() {
+  assert_pkg qutebrowser dolphin obs-studio-plugin-vkcapture-hook-libs
+  # build123d's OCP/OpenCascade wheels load these at import time
+  assert_pkg mesa-libGL libglvnd-glx fontconfig libX11 libXrender libXext
+  check "nchat installed" "nchat --version"
+  check "zulip-term installed" "zulip-term --version"
+  check "Cascadia Code Nerd Font installed" "fc-list | grep -qi 'CaskaydiaCove'"
+  local id
+  for id in org.telegram.desktop com.discordapp.Discord org.zulip.Zulip org.chromium.Chromium \
+            com.obsproject.Studio com.obsproject.Studio.Plugin.OBSVkCapture com.bambulab.BambuStudio; do
+    check "flatpak declared: $id" "grep -rqF '$id' /usr/share/bluebuild/default-flatpaks"
+  done
+  if [[ "${SLOW:-0}" == 1 ]]; then
+    if podman run --rm --entrypoint /bin/bash "$IMAGE" -c \
+      'export HOME=/tmp; cd "$(mktemp -d)" && uv venv -q --python 3.13 && uv pip install -q build123d &&
+       .venv/bin/python -c "from build123d import Box; assert Box(1,1,1).volume > 0.99"' >/dev/null 2>&1
+    then ok "build123d imports and builds a solid"; else fail "build123d imports and builds a solid"; fi
+  fi
+}
+
 check_base
 check_desktop
 check_remote
 check_gaming_and_tools
 check_ai_agents
+check_apps
 finish

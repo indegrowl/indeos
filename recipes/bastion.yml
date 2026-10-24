@@ -23,4 +23,6 @@ modules:
   - from-file: modules/containers.yml
   - from-file: modules/cli-tools.yml
   - from-file: modules/ai-agents.yml
+  - from-file: modules/apps.yml
+  - from-file: modules/chat.yml
   - type: signing # this sets up the proper policy & signing files for signed images to work fully

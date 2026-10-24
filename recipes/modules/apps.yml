@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
+# Desktop apps, fonts and the system libraries build123d needs.
+modules:
+  - type: dnf
+    install:
+      packages:
+        # qutebrowser is an RPM so userscripts like qute-pass can reach host tools
+        - qutebrowser
+        - dolphin
+        # Host side of OBS game capture (the Flatpak plugin receives it)
+        - obs-studio-plugin-vkcapture-hook-libs
+        # build123d: OCP/OpenCascade wheels load these at import time
+        - mesa-libGL
+        - libglvnd-glx
+        - fontconfig
+        - libX11
+        - libXrender
+        - libXext
+
+  - type: fonts
+    fonts:
+      nerd-fonts:
+        - CascadiaCode
+
+  - type: default-flatpaks
+    configurations:
+      - scope: system
+        install:
+          - org.telegram.desktop
+          - com.discordapp.Discord
+          - org.zulip.Zulip
+          - org.chromium.Chromium
+          - com.obsproject.Studio
+          - com.obsproject.Studio.Plugin.OBSVkCapture
+          - com.bambulab.BambuStudio
