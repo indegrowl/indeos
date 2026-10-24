@@ -6,6 +6,16 @@ description: Bazzite + Hyprland image for bastion, an always-on gaming, dev and 
 base-image: ghcr.io/ublue-os/bazzite
 image-version: stable
 
+stages:
+  # Builds bastion-xwayland-compat; see files/scripts/build-xwayland-compat.sh
+  - name: xwayland-compat
+    from: registry.fedoraproject.org/fedora:44
+    modules:
+      - type: script
+        scripts:
+          - build-xwayland-compat.sh
+
 modules:
   - from-file: modules/dev-languages.yml
+  - from-file: modules/desktop.yml
   - type: signing # this sets up the proper policy & signing files for signed images to work fully

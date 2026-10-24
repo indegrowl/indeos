@@ -1,0 +1,62 @@
+# yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
+# Hyprland desktop, greetd autologin, Plasma and its login manager removed.
+modules:
+  - type: copy
+    from: xwayland-compat
+    src: /out/
+    dest: /tmp/xwayland-compat/
+
+  - type: script
+    snippets:
+      - dnf5 -y install /tmp/xwayland-compat/*.rpm && rm -rf /tmp/xwayland-compat
+
+  - type: dnf
+    repos:
+      copr:
+        - sdegler/hyprland
+    install:
+      packages:
+        - hyprland
+        - hyprlock
+        - hypridle
+        - hyprpaper
+        - hyprpolkitagent
+        - xdg-desktop-portal-hyprland
+        - xdg-desktop-portal-gtk
+        - uwsm
+        - qt5-qtwayland
+        - qt6-qtwayland
+        - waybar
+        - fuzzel
+        - mako
+        - kitty
+        - greetd
+        - tuigreet
+        # Kept from Bazzite's KDE base, declared so Plasma removal can't take them
+        - dolphin
+        - kf6-kio-core
+        - kf6-kwallet
+        - redhat-menus
+    remove:
+      auto-remove: false
+      packages:
+        - plasma-login-manager
+        - kcm-plasmalogin
+        - kde-settings-plasmalogin
+        - plasma-desktop
+        - plasma-workspace
+        - kwin
+        - konsole
+        - kate
+
+  - type: files
+    files:
+      - source: system
+        destination: /
+
+  - type: systemd
+    system:
+      enabled:
+        - greetd.service
+      disabled:
+        - fedora-kinoite-plasmalogin-workaround.service # plasmalogin is removed

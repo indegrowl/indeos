@@ -1,0 +1,12 @@
+# greetd: log indegrowl straight into Hyprland at boot; show tuigreet only if
+# that session exits or crashes.
+[terminal]
+vt = 1
+
+[initial_session]
+command = "uwsm start hyprland.desktop"
+user = "indegrowl"
+
+[default_session]
+command = "tuigreet --time --remember --cmd 'uwsm start hyprland.desktop'"
+user = "greetd"
