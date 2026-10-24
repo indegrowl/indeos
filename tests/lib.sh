@@ -14,7 +14,7 @@ finish() {
 
 # run_in_image <shell command...>: run a command inside $IMAGE.
 run_in_image() {
-  podman run --rm --network=none --entrypoint /bin/bash "$IMAGE" -c "$*"
+  podman run --rm --network=none --no-hostname --no-hosts --entrypoint /bin/bash "$IMAGE" -c "$*"
 }
 
 # check <description> <shell command>: ok if the command succeeds inside the image.

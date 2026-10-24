@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <short>bastion LAN</short>
+  <description>Home network: mDNS and game streaming only. SSH and Sunshine's web UI are reachable over Tailscale.</description>
+  <service name="mdns"/>
+  <!-- Steam Remote Play -->
+  <port protocol="udp" port="27031-27036"/>
+  <port protocol="tcp" port="27036"/>
+  <port protocol="tcp" port="27037"/>
+  <!-- Sunshine (web UI 47990/tcp deliberately not opened here) -->
+  <port protocol="tcp" port="47984"/>
+  <port protocol="tcp" port="47989"/>
+  <port protocol="tcp" port="48010"/>
+  <port protocol="udp" port="47998-48000"/>
+</zone>

@@ -18,4 +18,5 @@ stages:
 modules:
   - from-file: modules/dev-languages.yml
   - from-file: modules/desktop.yml
+  - from-file: modules/remote.yml
   - type: signing # this sets up the proper policy & signing files for signed images to work fully

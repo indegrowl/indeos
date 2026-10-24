@@ -39,6 +39,41 @@ check_desktop() {
   assert_file /etc/xdg/menus/applications.menu
 }
 
+check_remote() {
+  local sshT='ssh-keygen -A >/dev/null 2>&1; sshd -T -C user=indegrowl,host=x'
+  assert_pkg openssh-server tailscale firewalld avahi nss-mdns
+  assert_enabled sshd.service
+  assert_enabled tailscaled.service
+  assert_enabled avahi-daemon.service
+  assert_enabled firewalld.service
+  # Password SSH only from Tailscale; root never (Review Focus 1)
+  check "sshd: password auth from Tailscale IPv4" "$sshT,addr=100.101.1.2 | grep -qx 'passwordauthentication yes'"
+  check "sshd: password auth from Tailscale IPv6" "$sshT,addr=fd7a:115c:a1e0::5 | grep -qx 'passwordauthentication yes'"
+  check "sshd: no password auth from LAN"         "$sshT,addr=192.168.1.50 | grep -qx 'passwordauthentication no'"
+  check "sshd: no keyboard-interactive from LAN"  "$sshT,addr=192.168.1.50 | grep -qx 'kbdinteractiveauthentication no'"
+  check "sshd: no root login from Tailscale"      "$sshT,addr=100.101.1.2 | grep -qx 'permitrootlogin no'"
+  check "sshd: no root login from LAN"            "$sshT,addr=192.168.1.50 | grep -qx 'permitrootlogin no'"
+  # Firewall: LAN zone has streaming + mDNS only, Tailscale fully trusted
+  check "firewall default zone is bastion-lan" "[ \"\$(firewall-offline-cmd --get-default-zone)\" = bastion-lan ]"
+  check "tailscale0 in trusted zone" "firewall-offline-cmd --zone=trusted --list-interfaces | grep -qw tailscale0"
+  check "LAN zone services are exactly mdns" "[ \"\$(firewall-offline-cmd --zone=bastion-lan --list-services)\" = mdns ]"
+  check "LAN zone ports are exactly the streaming ports" \
+    "[ \"\$(firewall-offline-cmd --zone=bastion-lan --list-ports | tr ' ' '\n' | sort | tr '\n' ' ')\" = \
+       '27031-27036/udp 27036/tcp 27037/tcp 47984/tcp 47989/tcp 47998-48000/udp 48010/tcp ' ]"
+  # Never sleep (Review Focus 5)
+  local t; for t in sleep suspend hibernate hybrid-sleep; do assert_masked "$t.target"; done
+  # Identity and updates: stage automatically, never reboot
+  # /etc/hostname can't ship in an image layer (buildah strips it); a boot unit sets it
+  local hn=/usr/lib/systemd/system/bastion-hostname.service
+  assert_grep '^ExecStart=/usr/bin/hostnamectl set-hostname bastion$' $hn
+  assert_grep '^ConditionHost=!bastion$' $hn
+  assert_enabled bastion-hostname.service
+  assert_enabled uupd.timer
+  check "uupd stages without rebooting (no --apply)" "grep -q '^ExecStart=/usr/bin/uupd' /usr/lib/systemd/system/uupd.service && ! grep -q -- '--apply' /usr/lib/systemd/system/uupd.service"
+  check "auto-rebooting bootc timer not enabled" "! systemctl is-enabled bootc-fetch-apply-updates.timer 2>/dev/null | grep -qx enabled"
+}
+
 check_base
 check_desktop
+check_remote
 finish

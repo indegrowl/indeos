@@ -1,0 +1,14 @@
+# This image is for one machine, so it owns the hostname. /etc/hostname can't
+# ship in the image (container builds strip it), so set it on boot instead.
+[Unit]
+Description=Set hostname to bastion
+ConditionHost=!bastion
+After=dbus.service
+Before=tailscaled.service avahi-daemon.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/hostnamectl set-hostname bastion
+
+[Install]
+WantedBy=multi-user.target

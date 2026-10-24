@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
+# SSH over Tailscale, firewall zones, mDNS, never sleep. Config files live in
+# files/system/etc and are copied by desktop.yml's files module.
+modules:
+  - type: dnf
+    install:
+      packages:
+        - openssh-server
+        - tailscale
+        - firewalld
+        - avahi
+        - nss-mdns
+
+  - type: script
+    snippets:
+      - firewall-offline-cmd --set-default-zone=bastion-lan
+
+  - type: systemd
+    system:
+      enabled:
+        - sshd.service
+        - tailscaled.service
+        - avahi-daemon.service
+        - firewalld.service
+        - bastion-hostname.service
+      masked:
+        - sleep.target
+        - suspend.target
+        - hibernate.target
+        - hybrid-sleep.target
