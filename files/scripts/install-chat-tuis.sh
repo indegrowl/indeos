@@ -20,3 +20,12 @@ rm -rf "$tmp"
 export UV_TOOL_DIR=/usr/lib/uv-tools UV_TOOL_BIN_DIR=/usr/bin UV_PYTHON_DOWNLOADS=never
 uv tool install --python 3.13 zulip-term
 rm -rf /root/.cache/uv
+
+# Catppuccin Mocha theme for zulip-term, which only loads its built-in themes
+zt="$(echo /usr/lib/uv-tools/zulip-term/lib/python3.*/site-packages/zulipterminal)"
+install -m644 "$(dirname "$0")/zulip-term/catppuccin_mocha.py" "$zt/themes/"
+sed -i \
+  -e 's/^from zulipterminal.themes import gruvbox_dark, /from zulipterminal.themes import catppuccin_mocha, gruvbox_dark, /' \
+  -e 's/^    "gruvbox_dark": gruvbox_dark,$/    "catppuccin_mocha": catppuccin_mocha,\n    "gruvbox_dark": gruvbox_dark,/' \
+  "$zt/config/themes.py"
+zulip-term --list-themes 2>/dev/null | grep -q catppuccin_mocha
