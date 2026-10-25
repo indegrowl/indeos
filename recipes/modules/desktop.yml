@@ -10,10 +10,16 @@ modules:
     snippets:
       - dnf5 -y install /tmp/xwayland-compat/*.rpm && rm -rf /tmp/xwayland-compat
 
+  - type: copy
+    from: wiremix
+    src: /out/wiremix
+    dest: /usr/bin/wiremix
+
   - type: dnf
     repos:
       copr:
         - sdegler/hyprland
+        - mineiro/utility-belt
     install:
       packages:
         - hyprland
@@ -30,8 +36,7 @@ modules:
         - fuzzel
         - wofi
         - foot
-        - pavucontrol
-        - blueman
+        - bluetui
         - NetworkManager-tui
         - mako
         - greetd

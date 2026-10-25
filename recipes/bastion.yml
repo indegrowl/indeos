@@ -14,6 +14,13 @@ stages:
       - type: script
         scripts:
           - build-xwayland-compat.sh
+  # Builds wiremix; see files/scripts/build-wiremix.sh
+  - name: wiremix
+    from: registry.fedoraproject.org/fedora:44
+    modules:
+      - type: script
+        scripts:
+          - build-wiremix.sh
 
 modules:
   - from-file: modules/dev-languages.yml
