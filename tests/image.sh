@@ -15,7 +15,7 @@ check_base() {
 check_desktop() {
   local g=/etc/greetd/config.toml
   assert_pkg hyprland hyprlock hypridle hyprpaper xdg-desktop-portal-hyprland xdg-desktop-portal-gtk \
-             uwsm qt5-qtwayland qt6-qtwayland hyprpolkitagent waybar fuzzel wofi foot pavucontrol mako kitty greetd tuigreet \
+             uwsm qt5-qtwayland qt6-qtwayland hyprpolkitagent waybar fuzzel wofi foot pavucontrol blueman NetworkManager-tui mako kitty greetd tuigreet \
              dolphin kf6-kio-core kf6-kwallet redhat-menus
   # Bazzite's gaming Xwayland must survive the Hyprland install
   assert_pkg terra-xorg-x11-server-Xwayland bastion-xwayland-compat
