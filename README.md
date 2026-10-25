@@ -33,6 +33,8 @@ Do these in order, at the local keyboard:
 4. Dotfiles: chezmoi already cloned `github.com/indegrowl/dotfiles` into `~/.local/share/chezmoi` (`chezmoi cd` takes you there). To be able to push, switch the remote to SSH: `chezmoi git -- remote set-url origin git@github.com:indegrowl/dotfiles.git`. Run `chezmoi update` yourself whenever you want; nothing updates automatically.
 5. Streaming: set up the headless gamescope session for Steam Remote Play and Sunshine, and pair Moonlight. Sunshine's web UI is reachable over Tailscale only. The resulting user services belong in the dotfiles.
 
+`/home` is a symlink to `/var/home`. New shells that start in your home folder switch to `~`, so the prompt doesn't show `/var/home/indegrowl`.
+
 The data drive mounts at `/mnt/data`. If it's missing, boot carries on without it.
 
 ## Development

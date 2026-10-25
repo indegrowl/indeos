@@ -88,6 +88,12 @@ check_gaming_and_tools() {
   assert_pkg podman distrobox podman-compose
   assert_pkg kitty neovim tmux zellij git lazygit starship gh btop glow pass gnupg2 \
              zoxide fzf ripgrep tree yazi wl-clipboard cliphist
+  # /home -> /var/home: shells starting in the resolved home switch to $HOME (prompt shows ~)
+  assert_file /etc/profile.d/bastion-home.sh
+  check "interactive bash in the resolved home moves to \$HOME" \
+    "mkdir -p /var/home/t && cd /var/home/t && [ \"\$(HOME=/home/t bash -i -c 'echo \$PWD' 2>/dev/null | tail -n1)\" = /home/t ]"
+  check "interactive bash elsewhere stays put" \
+    "cd /tmp && [ \"\$(HOME=/home/t bash -i -c 'echo \$PWD' 2>/dev/null | tail -n1)\" = /tmp ]"
 }
 
 check_ai_agents() {
