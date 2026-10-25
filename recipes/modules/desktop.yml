@@ -28,6 +28,9 @@ modules:
         - qt6-qtwayland
         - waybar
         - fuzzel
+        - wofi # launcher the dotfiles bind to Super+R
+        - foot # terminal the dotfiles bind to Super+Q
+        - pavucontrol # waybar volume click
         - mako
         - greetd
         - tuigreet
