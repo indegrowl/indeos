@@ -21,6 +21,13 @@ stages:
       - type: script
         scripts:
           - build-wiremix.sh
+  # Builds tgt; see files/scripts/build-tgt.sh
+  - name: tgt
+    from: registry.fedoraproject.org/fedora:44
+    modules:
+      - type: script
+        scripts:
+          - build-tgt.sh
 
 modules:
   - from-file: modules/dev-languages.yml

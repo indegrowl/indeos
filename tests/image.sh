@@ -112,6 +112,8 @@ check_apps() {
   # build123d's OCP/OpenCascade wheels load these at import time
   assert_pkg mesa-libGL libglvnd-glx fontconfig libX11 libXrender libXext
   check "nchat installed" "nchat --version"
+  assert_file /usr/bin/tgt
+  check "tgt runs" "tgt --version"
   check "zulip-term installed" "zulip-term --version"
   check "zulip-term has the catppuccin_mocha theme" "zulip-term --list-themes 2>/dev/null | grep -q catppuccin_mocha"
   check "Cascadia Code Nerd Font installed" "fc-list | grep -qi 'CaskaydiaCove'"

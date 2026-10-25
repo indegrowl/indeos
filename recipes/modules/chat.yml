@@ -1,7 +1,18 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
-# Terminal clients for Telegram (nchat) and Zulip (zulip-terminal).
+# Terminal clients for Telegram (nchat, tgt) and Zulip (zulip-terminal).
 # The GUI clients are Flatpaks in apps.yml.
 modules:
+  - type: copy
+    from: tgt
+    src: /out/tgt
+    dest: /usr/bin/tgt
+
+  - type: dnf
+    install:
+      packages:
+        - libcxx
+        - libcxxabi
+
   - type: script
     scripts:
       - install-chat-tuis.sh
