@@ -152,8 +152,8 @@ check_storage() {
   assert_grep '^Type=btrfs$' $m
   # Missing drive must never block boot (Review Focus 2)
   assert_grep '^Options=noatime,compress=zstd:1,nofail$' $m
-  # A missing drive gives up after 10s (x-systemd.device-timeout only works in fstab)
-  assert_grep '^JobRunningTimeoutSec=10s$' '/usr/lib/systemd/system/dev-disk-by\x2duuid-5ade185d\x2db4a7\x2d4dfb\x2d80d8\x2d691830837386.device.d/10-bastion-timeout.conf'
+  # A missing drive gives up after 90s (x-systemd.device-timeout only works in fstab)
+  assert_grep '^JobRunningTimeoutSec=90s$' '/usr/lib/systemd/system/dev-disk-by\x2duuid-5ade185d\x2db4a7\x2d4dfb\x2d80d8\x2d691830837386.device.d/10-bastion-timeout.conf'
   # Bazzite's automounter would race us for the labelled drive
   check "ublue-os-media-automount disabled" "! systemctl is-enabled ublue-os-media-automount.service 2>/dev/null | grep -qx enabled"
   assert_enabled var-mnt-data.mount

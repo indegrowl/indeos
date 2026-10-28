@@ -1,6 +1,6 @@
 # bastion's 2TB data drive (backups now, arr media later), reachable as
 # /mnt/data (/mnt links to /var/mnt). nofail keeps a missing drive from
-# blocking boot; the .device drop-in caps the wait at 10s.
+# blocking boot; the .device drop-in caps the wait at 90s.
 [Unit]
 Description=bastion data drive
 
